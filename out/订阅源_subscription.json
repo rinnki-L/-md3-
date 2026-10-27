@@ -1,0 +1,72 @@
+[
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/baozi.json",
+    "bookSourceName": "包子漫画(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(baozi.js v?)。HTML站。搜索/详情/目录页解析；正文走App版域名appcn.baozimh.com，图片默认质量/w640。注意：站点有Gatekeeper反爬，若返回challenge_required需先在阅读App内打开该站并过验证(或用能直连的网络)。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/ccc.json",
+    "bookSourceName": "CCC追漫台(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(ccc.js)。台湾CCC创作集官方平台。图片为AES-128-CBC双层加密，已通过imageDecode完整还原(匿名token=freeforccc2020reading)。付费/登录章节无法阅读(书源无登录态承载)。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/copy_manga.json",
+    "bookSourceName": "拷贝漫画(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(copy_manga.js v1.4.3)。API站，请求头含HMAC-SHA256签名(hex签名，密钥base64解码)与设备信息(deviceinfo/device/pseudoid由书源持久化)。正文图片按words顺序重排，默认1500px质量。注意：若命中服务端风控(HTTP 210 '请更新APP')说明IP/设备被标记为破解版，需等待或更换网络；本机实测从数据中心IP被210拦截，家用IP正常。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/goda.json",
+    "bookSourceName": "GoDa漫画(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(goda.js)。HTML站+API(v2.apikk.top)。正文图片为自定义base64混淆字符串(J7r前缀+三段重组+去锯齿)，解码器已内置在jsLib。图片域c-nd3-1.6wm.top。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/ikmmh.json",
+    "bookSourceName": "爱看漫(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(ikmmh.js)。聚合站，有反爬校验cookie(403页需手动设置cookie，书源内无法自动重试)与地区封锁；本机(数据中心IP)实测被TLS/地区封锁，需在能访问的网络下使用。正文图片多级提取(阅读器选择器→脚本数组→read/pics API)，已尽力还原；Venera的'每图多候选失败回退链'在阅读侧无等价物，已降级为取第一候选。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/jm.json",
+    "bookSourceName": "禁漫天堂(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(jm.js v2.0.16)。API域名可从newsvr-2025.txt动态获取(失败回退内置4域名)，响应AES-ECB加密已内置解密；请求头带md5时间戳token。【重要降级】正文图片按块打乱(scramble)还原需要像素级处理，阅读App无此管线，220980+话的图片会以打乱分块状态显示(无法还原)。本机实测内置域名返回JS挑战页，需在可访问的网络下使用。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/manhuaren.json",
+    "bookSourceName": "漫画人(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(manhuaren.js)。HTML站。正文页eval(function(p,a,c,k)混淆脚本解包提取图片，解包器已内置。注意：站点改版后详情页章节列表改为前端JS渲染，Venera原用的.detail-selector结构在部分环境不再输出，目录可能为空(需在App内实测)；正文带Referer请求头。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/mycomic.json",
+    "bookSourceName": "MYCOMIC(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(mycomic.js)。Cloudflare保护站，需要cf_clearance登录cookie(在阅读App内登录后cookie经enabledCookieJar保存)。章节列表从页面Alpine.js的chapters:[...]数据提取，图片在img.page(data-src)。本机(数据中心IP)实测被CF拦截，需在可访问的网络下使用。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/ykmh.json",
+    "bookSourceName": "优酷漫画(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(ykmh.js)。搜索在www.ykmh.net、详情/正文在m.ykmh.net(mip移动版)，正则解析。正文从var chapterImages=[...]提取。站点有Cloudflare，本机(数据中心IP)实测403挑战，需在可访问的网络下使用。",
+    "lastUpdateTime": 0
+  },
+  {
+    "bookSourceUrl": "https://cdn.jsdelivr.net/gh/rinnki-L/-md3-@main/out/zaimanhua.json",
+    "bookSourceName": "再漫画(移植)",
+    "bookSourceGroup": "Venera移植",
+    "bookSourceComment": "Venera源移植(zaimanhua.js)。纯API站，搜索/详情/目录/正文全JSON。注意：本机实测搜索接口返回的部分漫画id已失效(errno=2漫画不存在)，属上游搜索索引问题，Venera原源同样受影响；可通过'发现-更新列表'进入可读漫画。",
+    "lastUpdateTime": 0
+  }
+]
