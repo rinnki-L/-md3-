@@ -1,0 +1,40 @@
+{
+  "bookSourceUrl": "https://www.manhuaren.com",
+  "bookSourceName": "漫画人(移植)",
+  "bookSourceGroup": "Venera移植",
+  "bookSourceType": 2,
+  "bookSourceComment": "Venera源移植(manhuaren.js)。HTML站。正文页eval(function(p,a,c,k)混淆脚本解包提取图片，解包器已内置。注意：站点改版后详情页章节列表改为前端JS渲染，Venera原用的.detail-selector结构在部分环境不再输出，目录可能为空(需在App内实测)；正文带Referer请求头。",
+  "enabled": true,
+  "enabledCookieJar": true,
+  "enabledExplore": true,
+  "lastUpdateTime": 0,
+  "respondTime": 180000,
+  "weight": 0,
+  "customOrder": 0,
+  "header": "{\"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\",\"Accept\":\"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\",\"Accept-Language\":\"zh-CN,zh;q=0.9\",\"Referer\":\"https://www.manhuaren.com/\"}",
+  "jsLib": null,
+  "searchUrl": "@js:'https://www.manhuaren.com/search?title='+encodeURIComponent(key)+'&language=1&page='+page",
+  "ruleSearch": {
+    "bookList": "@CSS:.book-list li",
+    "name": "@CSS:.book-list-info-title@text",
+    "bookUrl": "@CSS:.book-list-info a@href",
+    "coverUrl": "@CSS:.book-list-cover-img@src",
+    "intro": "@CSS:.book-list-info-desc@text",
+    "lastChapter": "@CSS:.book-list-info-bottom-right-font@text"
+  },
+  "ruleBookInfo": {
+    "name": "@CSS:.detail-main-info-title@text",
+    "coverUrl": "@CSS:.detail-main-cover img@src",
+    "intro": "@CSS:.detail-desc@text",
+    "author": "@js:(function(){var m=result.match(/作者：<a[^>]*>([^<]+)<\\/a>/);return m?m[1].trim():'';})()",
+    "kind": "@CSS:.detail-main-info-class a@text"
+  },
+  "ruleToc": {
+    "chapterList": "@js:(function(){\nvar out=[];\nvar groupRe=/<div[^>]*class=\"[^\"]*detail-selector-item[^\"]*\"[^>]*onclick=\"[^\"]*titleSelect\\([^)]*,[^)]*,\\s*['\"]([^'\"]+)['\"]\\)[^\"]*\"[^>]*>([\\s\\S]*?)<\\/div>/g;\nvar gm;\nwhile((gm=groupRe.exec(result))){\n  var listId=gm[1];\n  var idRe=new RegExp('<div[^>]*id=\"'+listId+'\"[^>]*>[\\s\\S]*?(<a[^>]*class=\"[^\"]*chapteritem[^\"]*\"[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>)','g');\n  var m;\n  while((m=idRe.exec(result))){\n    var t=m[3].replace(/<[^>]+>/g,'').trim()||m[2];\n    var u=m[2];if(u.indexOf('http')<0)u='https://www.manhuaren.com'+u;\n    out.push({name:t,url:u});\n  }\n}\nif(out.length===0){\n  var fallbackRe=/<a[^>]*class=\"[^\"]*chapteritem[^\"]*\"[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/g;\n  var m2;\n  while((m2=fallbackRe.exec(result))){\n    var t2=m2[2].replace(/<[^>]+>/g,'').trim()||m2[1];\n    var u2=m2[1];if(u2.indexOf('http')<0)u2='https://www.manhuaren.com'+u2;\n    out.push({name:t2,url:u2});\n  }\n}\nreturn out;})()",
+    "chapterName": "@js:$.name",
+    "chapterUrl": "@js:$.url"
+  },
+  "ruleContent": {
+    "content": "@js:(function(){\nvar i=result.indexOf(\"eval(function(p,a,c,k,e,d)\");\nif(i<0)return '';\nvar script=result.substring(i);\nvar pStart=script.indexOf(\"}('\")+3;\nvar boundary=script.substring(pStart).match(/',(\\d+),(\\d+),'/);\nif(!boundary)return '';\nvar bi=boundary.index+pStart;\nvar rawP=script.substring(pStart,bi);\nvar a=parseInt(boundary[1],10);\nvar c=parseInt(boundary[2],10);\nvar kStart=bi+boundary[0].length;\nvar kEnd=script.indexOf(\"'.split\",kStart);\nvar rawK=script.substring(kStart,kEnd);\nvar dict=rawK.split('|');\nvar e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36));};\nvar d={};\nvar cc=c;\nwhile(cc--)d[e(cc)]=dict[cc]||e(cc);\nvar dec=rawP.replace(/\\b\\w+\\b/g,function(w){return d[w]||w;});\nvar am=dec.match(/\\[([\\s\\S]*?)\\]/);\nif(!am)return '';\nvar items=am[1].split(',').map(function(it){return it.trim().replace(/^\\\\?['\"]|\\\\?['\"]$/g,'');});\nvar out=[];\nfor(var j=0;j<items.length;j++){if(items[j].indexOf('http')===0)out.push('<img src=\"'+items[j]+'\">');}\nreturn out.join('\\n');})()"
+  }
+}
