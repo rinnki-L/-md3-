@@ -1,0 +1,39 @@
+{
+  "bookSourceUrl": "https://cn.bzmgcn.com",
+  "bookSourceName": "包子漫画(移植)",
+  "bookSourceGroup": "Venera移植",
+  "bookSourceType": 2,
+  "bookSourceComment": "Venera源移植(baozi.js v?)。HTML站。搜索/详情/目录页解析；正文走App版域名appcn.baozimh.com，图片默认质量/w640。注意：站点有Gatekeeper反爬，若返回challenge_required需先在阅读App内打开该站并过验证(或用能直连的网络)。",
+  "enabled": true,
+  "enabledCookieJar": true,
+  "enabledExplore": true,
+  "lastUpdateTime": 0,
+  "respondTime": 180000,
+  "weight": 0,
+  "customOrder": 0,
+  "header": "{\"User-Agent\":\"Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36\",\"Referer\":\"https://cn.bzmgcn.com/\"}",
+  "jsLib": null,
+  "searchUrl": "@js:'https://cn.bzmgcn.com/search?q='+encodeURIComponent(key)",
+  "ruleSearch": {
+    "bookList": "@CSS:div.comics-card",
+    "name": "@CSS:h3@text",
+    "bookUrl": "@CSS:a@href",
+    "coverUrl": "@CSS:a amp-img@src",
+    "intro": "@CSS:small@text"
+  },
+  "ruleBookInfo": {
+    "name": "@CSS:h1.comics-detail__title@text",
+    "coverUrl": "@CSS:div.l-content amp-img@src",
+    "intro": "@CSS:p.comics-detail__desc@text",
+    "author": "@CSS:h2.comics-detail__author@text",
+    "kind": "@CSS:div.tag-list span@text"
+  },
+  "ruleToc": {
+    "chapterList": "@js:(function(){\nvar cid=book.bookUrl.replace(/\\/+$/,'').split('/').pop();\nvar re=/<div[^>]*class=\"[^\"]*comics-chapters[^\"]*\"[^>]*>\\s*<a[^>]*href=\"[^\"]*\"[^>]*>[\\s\\S]*?<span[^>]*>([\\s\\S]*?)<\\/span>[\\s\\S]*?<\\/a>/g;\nvar names=[];var m;\nwhile((m=re.exec(result))){var t=m[1].replace(/<[^>]+>/g,'').trim();if(t)names.push(t);}\nvar out=[];\nfor(var i=0;i<names.length;i++){out.push({name:names[i],url:'https://appcn.baozimh.com/baozimhapp/comic/chapter/'+cid+'/0_'+i+'.html'});}\nreturn out;})()",
+    "chapterName": "@js:$.name",
+    "chapterUrl": "@js:$.url"
+  },
+  "ruleContent": {
+    "content": "@js:(function(){\nvar out=[];\nvar re=/<img[^>]*class=\"[^\"]*comic-contain__item[^\"]*\"[^>]*data-src=\"([^\"]+)\"/g;\nvar m;\nwhile((m=re.exec(result))){\n  var u=m[1];\n  var mm=u.match(/^(https?:\\/\\/)?([^/\\s:]+)(:\\d+)?(\\/[a-z]comic\\/.*)/);\n  if(mm){u=(mm[1]||'https://')+mm[2]+'/w640'+mm[4];}\n  out.push('<img src=\"'+u+'\">');\n}\nreturn out.join('\\n');})()"
+  }
+}
