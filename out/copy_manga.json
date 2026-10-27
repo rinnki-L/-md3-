@@ -1,0 +1,41 @@
+{
+  "bookSourceUrl": "https://api.copy2000.online",
+  "bookSourceName": "拷贝漫画(移植)",
+  "bookSourceGroup": "Venera移植",
+  "bookSourceType": 2,
+  "bookSourceComment": "Venera源移植(copy_manga.js v1.4.3)。API站，请求头含HMAC-SHA256签名(hex签名，密钥base64解码)与设备信息(deviceinfo/device/pseudoid由书源持久化)。正文图片按words顺序重排，默认1500px质量。注意：若命中服务端风控(HTTP 210 '请更新APP')说明IP/设备被标记为破解版，需等待或更换网络；本机实测从数据中心IP被210拦截，家用IP正常。",
+  "enabled": true,
+  "enabledCookieJar": true,
+  "enabledExplore": true,
+  "lastUpdateTime": 0,
+  "respondTime": 180000,
+  "weight": 0,
+  "customOrder": 0,
+  "header": "@js:cm_headers()",
+  "jsLib": "\nfunction cm_randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}\nfunction cm_genDeviceInfo(){return cm_randInt(1000000,9999999)+'V-'+cm_randInt(1000,9999);}\nfunction cm_genDevice(){\n  function rA(){return String.fromCharCode(65+cm_randInt(0,25));}\n  function rD(){return String.fromCharCode(48+cm_randInt(0,9));}\n  return rA()+rA()+rD()+rA()+'.'+rD()+rD()+rD()+rD()+rD()+rD()+'.'+rD()+rD()+rD();\n}\nfunction cm_genPseudoid(){\n  var c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';var s='';\n  for(var i=0;i<16;i++)s+=c.charAt(cm_randInt(0,c.length-1));\n  return s;\n}\nfunction cm_headers(){\n  var secret='M2FmMDg1OTAzMTEwMzJlZmUwNjYwNTUwYTA1NjNhNTM=';\n  var ts=Math.floor(Date.now()/1000).toString();\n  var key=java.base64DecodeToByteArray(secret);\n  var mac=Packages.javax.crypto.Mac.getInstance('HmacSHA256');\n  mac.init(new Packages.javax.crypto.spec.SecretKeySpec(key,'HmacSHA256'));\n  var sig=Packages.android.util.Base64.encodeToString(mac.doFinal(java.strToBytes(ts)),2);\n  var deviceinfo=java.get('_deviceinfo');\n  if(!deviceinfo){deviceinfo=cm_genDeviceInfo();java.put('_deviceinfo',deviceinfo);}\n  var device=java.get('_device');\n  if(!device){device=cm_genDevice();java.put('_device',device);}\n  var pseudoid=java.get('_pseudoid');\n  if(!pseudoid){pseudoid=cm_genPseudoid();java.put('_pseudoid',pseudoid);}\n  var d=new Date();\n  var y=d.getFullYear();\n  var mo=('0'+(d.getMonth()+1)).slice(-2);\n  var day=('0'+d.getDate()).slice(-2);\n  return JSON.stringify({\n    'User-Agent':'COPY/3.0.6','source':'copyApp','deviceinfo':deviceinfo,\n    'dt':y+'.'+mo+'.'+day,'platform':'3','referer':'com.copymanga.app-3.0.6','version':'3.0.6',\n    'device':device,'pseudoid':pseudoid,'Accept':'application/json','region':'0',\n    'authorization':'Token','umstring':'b4c89ca4104ea9a97750314d791520ac',\n    'x-auth-timestamp':ts,'x-auth-signature':sig\n  });\n}\n",
+  "searchUrl": "@js:'https://api.copy2000.online/api/v3/search/comic?limit=30&offset='+((page-1)*30)+'&q='+encodeURIComponent(key)+'&q_type='",
+  "ruleSearch": {
+    "bookList": "@js:(function(){\nvar d=JSON.parse(result).results.list;var out=[];\nfor(var i=0;i<d.length;i++){\n  var c=d[i];\n  var comic=c.comic||c;\n  var au=(comic.author&&comic.author[0])?comic.author[0].name:'';\n  out.push({name:comic.name,author:au,coverUrl:comic.cover,bookUrl:'https://api.copy2000.online/api/v3/comic2/'+comic.path_word+'?in_mainland=true&platform=3',intro:comic.datetime_updated||''});\n}\nreturn out;})()",
+    "name": "@js:$.name",
+    "author": "@js:$.author",
+    "coverUrl": "@js:$.coverUrl",
+    "bookUrl": "@js:$.bookUrl",
+    "intro": "@js:$.intro"
+  },
+  "ruleBookInfo": {
+    "name": "@js:$.results.comic.name",
+    "coverUrl": "@js:$.results.comic.cover",
+    "intro": "@js:$.results.comic.brief",
+    "author": "@js:(function(){var a=$.results.comic.author||[];var o=[];for(var i=0;i<a.length;i++)o.push(a[i].name);return o.join('/');})()",
+    "kind": "@js:(function(){var t=$.results.comic.theme||[];var o=[];for(var i=0;i<t.length;i++)o.push(t[i].name);return o.join('/');})()",
+    "lastChapter": "@js:$.results.comic.datetime_updated"
+  },
+  "ruleToc": {
+    "chapterList": "@js:(function(){\nvar d=JSON.parse(result).results;\nvar m=book.bookUrl.match(/comic2\\/([^\\/?]+)/);\nif(!m)return [];\nvar cid=m[1];\nvar groups=d.groups||{};\nvar out=[];\nfor(var g in groups){\n  var path=groups[g].path_word;\n  var gname=groups[g].name;\n  var offset=0,total=1;\n  while(offset<total){\n    var url='https://api.copy2000.online/api/v3/comic/'+cid+'/group/'+path+'/chapters?limit=100&offset='+offset+'&in_mainland=true';\n    var jd=JSON.parse(java.ajax(url));\n    var list=jd.results.list;\n    total=jd.results.total;\n    for(var i=0;i<list.length;i++){\n      var n=(gname?gname+' | ':'')+list[i].name;\n      out.push({name:n,url:'https://api.copy2000.online/api/v3/comic/'+cid+'/chapter2/'+list[i].uuid+'?in_mainland=true'});\n    }\n    offset+=100;\n  }\n}\nreturn out;})()",
+    "chapterName": "@js:$.name",
+    "chapterUrl": "@js:$.url"
+  },
+  "ruleContent": {
+    "content": "@js:(function(){\nvar d=JSON.parse(result).results.chapter;\nvar contents=d.contents||[];\nvar words=d.words||[];\nvar imgs=new Array(contents.length);\nfor(var i=0;i<contents.length;i++){\n  var u=contents[i].url.replace(/([.\\/])c\\d+x\\.[a-zA-Z]+$/,'$1c1500x.webp');\n  var idx=(words&&words[i]!=null)?words[i]:i;\n  imgs[idx]=u;\n}\nvar out=[];\nfor(var i=0;i<imgs.length;i++){if(imgs[i])out.push('<img src=\"'+imgs[i]+'\">');}\nreturn out.join('\\n');})()"
+  }
+}
